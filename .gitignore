@@ -1,0 +1,10 @@
+/imgui.ini
+/Makefile
+/compile_commands.json
+/*.cmake
+/invoice_maker
+
+.idea/
+.cache/
+CMakeFiles/
+CMakeCache/
