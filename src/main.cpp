@@ -18,8 +18,9 @@ static inline void draw_main_menu() {
 }
 
 int main(int, char **) {
-    auto app = invoice_maker::main_window_create("Fakturník cpp",
-                                                 {.x = 1280, .y = 720});
+    std::unique_ptr<invoice_maker::InvoiceMaker> app =
+        invoice_maker::main_window_create("Fakturník cpp",
+                                          {.x = 1280, .y = 720});
 
     app->load_font_utf8("./assets/Inter.ttf", 16.f);
 
