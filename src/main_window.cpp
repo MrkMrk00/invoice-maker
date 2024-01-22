@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <cstdio>
 #include <functional>
-#include <iostream>
 #include <memory>
 
 #include "imgui.h"
