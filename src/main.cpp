@@ -1,3 +1,4 @@
+#include "database.hpp"
 #include "imgui.h"
 #include "main_window.hpp"
 
@@ -21,7 +22,7 @@ int main(int, char **) {
     std::unique_ptr<invoice_maker::InvoiceMaker> app =
         invoice_maker::main_window_create("Fakturník cpp",
                                           {.x = 1280, .y = 720});
-
+    invoice_maker::DB::connect();
     app->load_font_utf8("./assets/Inter.ttf", 16.f);
 
     invoice_maker::DrawOptions opts{
@@ -34,6 +35,8 @@ int main(int, char **) {
             ImGui::ShowDemoWindow();
         }
     });
+
+    invoice_maker::DB::destroy();
 
     return 0;
 }

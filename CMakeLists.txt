@@ -4,12 +4,16 @@ project(invoice_maker LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE debug)
 
+find_package(SQLite3 REQUIRED)
+
 add_subdirectory(vendor)
 
 add_executable(invoice_maker
 	src/main.cpp
 	src/main_window.cpp
+	src/database.cpp
 )
 
-target_link_libraries(invoice_maker imgui_glfw)
+target_link_libraries(invoice_maker PRIVATE imgui_glfw)
+target_link_libraries(invoice_maker PRIVATE SQLite::SQLite3)
 
