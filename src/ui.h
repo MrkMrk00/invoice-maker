@@ -2,7 +2,9 @@
 #define _H_UI
 
 #include <iostream>
+
 namespace invoice_maker::ui {
+
 template <class T>
 class StateContainer;
 
@@ -45,7 +47,6 @@ class StateContainer {
                       << std::endl;
 
             this->state->value = new T;
-            *this->state->value = {0};
         }
 
         return this->state->value;
