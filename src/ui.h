@@ -1,6 +1,7 @@
 #ifndef _H_UI
 #define _H_UI
 
+#include <iostream>
 #include <memory>
 
 namespace invoice_maker::ui {
