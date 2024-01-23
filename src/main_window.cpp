@@ -57,16 +57,16 @@ static ImWchar IMFONT_UTF_RANGE[3] = {0x20, 0xFFFF, 0};
 
 namespace invoice_maker {
 
-InvoiceMaker::~InvoiceMaker() {
+MainWindow::~MainWindow() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    glfwDestroyWindow(this->main_window);
+    glfwDestroyWindow(this->window);
     glfwTerminate();
 }
 
-int InvoiceMaker::load_font_utf8(const char* file_path, float font_size) {
+int MainWindow::load_font_utf8(const char* file_path, float font_size) {
     auto& io = ImGui::GetIO();
     (void)io;
 
@@ -79,8 +79,8 @@ int InvoiceMaker::load_font_utf8(const char* file_path, float font_size) {
     return this->fonts.size() - 1;
 }
 
-std::unique_ptr<InvoiceMaker> main_window_create(const char* window_title,
-                                                 WindowSize size) {
+std::unique_ptr<MainWindow> main_window_create(const char* window_title,
+                                               WindowSize size) {
     if (!GLFW_INITD) {
         int err = glfw_init();
         if (err > 0) {
@@ -114,14 +114,14 @@ std::unique_ptr<InvoiceMaker> main_window_create(const char* window_title,
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(GLSL_VERSION);
 
-    auto main_window = std::make_unique<InvoiceMaker>(window);
+    auto main_window = std::make_unique<MainWindow>(window);
 
     return main_window;
 }
 
-void window_loop(const InvoiceMaker& app, const DrawOptions& opts,
+void window_loop(const MainWindow& app, const DrawOptions& opts,
                  std::function<void()> loop_func) {
-    auto window = app.main_window;
+    auto window = app.window;
     auto clear_color = opts.clear_color;
 
     while (!glfwWindowShouldClose(window)) {

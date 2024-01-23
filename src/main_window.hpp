@@ -17,20 +17,20 @@ struct DrawOptions {
     ImVec4 clear_color;
 };
 
-class InvoiceMaker {
+class MainWindow {
    private:
-    GLFWwindow *main_window;
+    GLFWwindow *window;
     std::vector<ImFont *> fonts;
 
    public:
-    InvoiceMaker(GLFWwindow *main_window_) : main_window(main_window_) {}
-    ~InvoiceMaker();
+    MainWindow(GLFWwindow *window_) : window(window_) {}
+    ~MainWindow();
 
-    const GLFWwindow *window() const { return this->main_window; }
+    const GLFWwindow *get_window() const { return this->window; }
     ImFont *get_font(int index) { return this->fonts.at(index); }
     int load_font_utf8(const char *file_path, float font_size);
 
-    friend void window_loop(const InvoiceMaker &app, const DrawOptions &opts,
+    friend void window_loop(const MainWindow &app, const DrawOptions &opts,
                             std::function<void()> loop_func);
 };
 
@@ -38,10 +38,10 @@ struct WindowSize {
     unsigned int x, y;
 };
 
-std::unique_ptr<InvoiceMaker> main_window_create(const char *window_title,
-                                                 WindowSize size);
+std::unique_ptr<MainWindow> main_window_create(const char *window_title,
+                                               WindowSize size);
 
-void window_loop(const InvoiceMaker &app, const DrawOptions &opts,
+void window_loop(const MainWindow &app, const DrawOptions &opts,
                  std::function<void()> loop_func);
 
 }  // namespace invoice_maker

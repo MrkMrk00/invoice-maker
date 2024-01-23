@@ -1,13 +1,14 @@
-#include <iostream>
-
+#include "data.hpp"
 #include "database.hpp"
 #include "imgui.h"
 #include "main_window.hpp"
+#include "ui.h"
 
 namespace DB = invoice_maker::DB;
 
 static struct {
     bool display_demo = false;
+    bool bank_accounts = false;
 } DRAW_CTX{};
 
 static inline void draw_main_menu() {
@@ -19,26 +20,35 @@ static inline void draw_main_menu() {
 
         ImGui::EndMenu();
     }
+    if (ImGui::MenuItem("Bankovní účty", NULL, DRAW_CTX.bank_accounts)) {
+        DRAW_CTX.bank_accounts = !DRAW_CTX.bank_accounts;
+    }
     ImGui::EndMainMenuBar();
 }
 
-void db_init() {
-    bool users_exists = DB::table_exists("Users");
+struct BankAccountsState {
+    bool display_add = false;
+    char number[255];
+};
 
-    std::cout << __PRETTY_FUNCTION__ << " :: "
-              << (users_exists ? "Table Users exists"
-                               : "Table Users does not exist")
-              << std::endl;
+static inline void BankAccounts(bool &visible) {
+    static invoice_maker::ui::State<BankAccountsState> bank_accounts_state{};
+    auto state = bank_accounts_state.use();
 
-    if (!users_exists) {
-        std::cout << "Creating Users table" << std::endl;
+    if (!visible) {
+        return;
+    }
 
-        auto q_users = DB::query(R"(CREATE TABLE IF NOT EXISTS Users (
-            id      BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            name    VARCHAR(255) NOT NULL UNIQUE
-        ))");
+    ImGui::Begin("Bankovní účty", &visible);
+    if (ImGui::Button("+ Přidat", {75, 30})) {
+        state()->display_add = true;
+    }
+    ImGui::End();
 
-        q_users->next();
+    if (state()->display_add) {
+        ImGui::Begin("Přidat bankovní účet", &state()->display_add);
+        ImGui::InputText("Číslo", state()->number, 255);
+        ImGui::End();
     }
 }
 
@@ -46,7 +56,7 @@ int main(int, char **) {
     auto app = invoice_maker::main_window_create("Fakturník cpp",
                                                  {.x = 1280, .y = 720});
     DB::connect();
-    db_init();
+    invoice_maker::data::migrate();
 
     app->load_font_utf8("./assets/Inter.ttf", 16.f);
 
@@ -59,6 +69,7 @@ int main(int, char **) {
         if (DRAW_CTX.display_demo) {
             ImGui::ShowDemoWindow();
         }
+        BankAccounts(DRAW_CTX.bank_accounts);
     });
 
     DB::destroy();
