@@ -28,7 +28,7 @@ static inline void draw_main_menu() {
 
 struct BankAccountsState {
     bool display_add = false;
-    char number[255];
+    char number[255] = {0};
 };
 
 static inline void BankAccounts(bool &visible) {

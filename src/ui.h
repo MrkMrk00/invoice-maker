@@ -9,7 +9,7 @@ template <class T>
 class StateContainer;
 
 template <class T>
-class State {
+class State final {
    private:
     T *value = nullptr;
 
@@ -26,12 +26,14 @@ class State {
         this->value = nullptr;
     }
 
+    ~State() { delete this->value; }
+
     StateContainer<T> use() { return StateContainer<T>{this}; }
     friend T *StateContainer<T>::operator()();
 };
 
 template <class T>
-class StateContainer {
+class StateContainer final {
    private:
     State<T> *state;
     bool was_used = false;
