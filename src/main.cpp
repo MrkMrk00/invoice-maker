@@ -14,13 +14,13 @@ static struct {
 static inline void draw_main_menu() {
     ImGui::BeginMainMenuBar();
     if (ImGui::BeginMenu("Nápověda")) {
-        if (ImGui::MenuItem("Zobrazit Demo", NULL, DRAW_CTX.display_demo)) {
+        if (ImGui::MenuItem("Zobrazit Demo", nullptr, DRAW_CTX.display_demo)) {
             DRAW_CTX.display_demo = !DRAW_CTX.display_demo;
         }
 
         ImGui::EndMenu();
     }
-    if (ImGui::MenuItem("Bankovní účty", NULL, DRAW_CTX.bank_accounts)) {
+    if (ImGui::MenuItem("Bankovní účty", nullptr, DRAW_CTX.bank_accounts)) {
         DRAW_CTX.bank_accounts = !DRAW_CTX.bank_accounts;
     }
     ImGui::EndMainMenuBar();
@@ -32,7 +32,7 @@ struct BankAccountsState {
 };
 
 static inline void BankAccounts(bool &visible) {
-    static invoice_maker::ui::State<BankAccountsState> bank_accounts_state{};
+    static invoice_maker::ui::State<BankAccountsState> bank_accounts_state;
     auto state = bank_accounts_state.use();
 
     if (!visible) {
@@ -41,13 +41,13 @@ static inline void BankAccounts(bool &visible) {
 
     ImGui::Begin("Bankovní účty", &visible);
     if (ImGui::Button("+ Přidat", {75, 30})) {
-        state()->display_add = true;
+        state->display_add = true;
     }
     ImGui::End();
 
-    if (state()->display_add) {
-        ImGui::Begin("Přidat bankovní účet", &state()->display_add);
-        ImGui::InputText("Číslo", state()->number, 255);
+    if (state->display_add) {
+        ImGui::Begin("Přidat bankovní účet", &state->display_add);
+        ImGui::InputText("Číslo", state->number, 255);
         ImGui::End();
     }
 }

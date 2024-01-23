@@ -30,18 +30,18 @@ class Statement {
 
     std::string get_sql() const;
 
-    int64_t get_int(unsigned int i_col) const;
-    double get_float(unsigned int i_col) const;
-    std::string get_string(unsigned int i_col) const;
-    BLOB get_blob(unsigned int i_col) const;
+    int64_t get_int(int i_col) const;
+    double get_float(int i_col) const;
+    std::string get_string(int i_col) const;
+    BLOB get_blob(int i_col) const;
 
     int bind(const std::string &param_name, sqlite3_int64 value) const;
     int bind(const std::string &param_name, double value) const;
     int bind(const std::string &param_name, const std::string &value) const;
 
-    int bind(unsigned int i_param, sqlite3_int64 value) const;
-    int bind(unsigned int i_param, double value) const;
-    int bind(unsigned int i_param, const std::string &value) const;
+    int bind(int i_param, sqlite3_int64 value) const;
+    int bind(int i_param, double value) const;
+    int bind(int i_param, const std::string &value) const;
 
     explicit Statement(int error_) : error(error_) {}
     explicit Statement(sqlite3_stmt *stmt_) : stmt(stmt_) {}

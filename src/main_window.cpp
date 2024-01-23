@@ -66,11 +66,11 @@ MainWindow::~MainWindow() {
     glfwTerminate();
 }
 
-int MainWindow::load_font_utf8(const char* file_path, float font_size) {
+size_t MainWindow::load_font_utf8(const char* file_path, float font_size) {
     auto& io = ImGui::GetIO();
     (void)io;
 
-    auto font = io.Fonts->AddFontFromFileTTF(file_path, font_size, NULL,
+    auto font = io.Fonts->AddFontFromFileTTF(file_path, font_size, nullptr,
                                              IMFONT_UTF_RANGE);
 
     IM_ASSERT(font != nullptr);
@@ -120,7 +120,7 @@ std::unique_ptr<MainWindow> main_window_create(const char* window_title,
 }
 
 void window_loop(const MainWindow& app, const DrawOptions& opts,
-                 std::function<void()> loop_func) {
+                 const std::function<void()> &loop_func) {
     auto window = app.window;
     auto clear_color = opts.clear_color;
 

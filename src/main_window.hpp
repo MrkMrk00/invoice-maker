@@ -23,15 +23,17 @@ class MainWindow {
     std::vector<ImFont *> fonts;
 
    public:
-    MainWindow(GLFWwindow *window_) : window(window_) {}
+    explicit MainWindow(GLFWwindow *window_) : window(window_) {}
     ~MainWindow();
 
-    const GLFWwindow *get_window() const { return this->window; }
-    ImFont *get_font(int index) { return this->fonts.at(index); }
-    int load_font_utf8(const char *file_path, float font_size);
+    [[nodiscard]] const GLFWwindow *get_window() const { return this->window; }
+    [[nodiscard]] ImFont *get_font(const int index) const {
+        return this->fonts.at(index);
+    }
+    size_t load_font_utf8(const char *file_path, float font_size);
 
     friend void window_loop(const MainWindow &app, const DrawOptions &opts,
-                            std::function<void()> loop_func);
+                            const std::function<void()> &loop_func);
 };
 
 struct WindowSize {
@@ -42,7 +44,7 @@ std::unique_ptr<MainWindow> main_window_create(const char *window_title,
                                                WindowSize size);
 
 void window_loop(const MainWindow &app, const DrawOptions &opts,
-                 std::function<void()> loop_func);
+                 const std::function<void()> &loop_func);
 
 }  // namespace invoice_maker
 

@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <memory>
@@ -10,13 +9,14 @@
 #include "sqlite3.h"
 
 namespace invoice_maker::DB {
-static sqlite3 *CONNECTION = NULL;
+static sqlite3 *CONNECTION = nullptr;
 
 int connect() {
     int flags =
         SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE;
 
-    int result_code = sqlite3_open_v2(u8"Database", &CONNECTION, flags, NULL);
+    int result_code =
+        sqlite3_open_v2(u8"Database", &CONNECTION, flags, nullptr);
 
     if (result_code) {
         fprintf(stderr, "DB Error: %s\n", sqlite3_errmsg(CONNECTION));
@@ -61,11 +61,12 @@ const char *Statement::error_message() const {
 }
 
 std::unique_ptr<Statement> query(const std::string &sql) {
-    sqlite3_stmt *stmt = NULL;
-    const char *tail_ptr = NULL;
+    sqlite3_stmt *stmt = nullptr;
+    const char *tail_ptr = nullptr;
 
-    int code = sqlite3_prepare_v3(CONNECTION, sql.c_str(), sql.size(), 0, &stmt,
-                                  &tail_ptr);
+    int code =
+        sqlite3_prepare_v3(CONNECTION, sql.c_str(),
+                           static_cast<int>(sql.size()), 0, &stmt, &tail_ptr);
 
     if (code != SQLITE_OK) {
         fprintf(stderr, "SQLite Error %d (%s): %s\n", code,
@@ -77,42 +78,43 @@ std::unique_ptr<Statement> query(const std::string &sql) {
     return std::make_unique<Statement>(stmt);
 }
 
-int64_t Statement::get_int(unsigned int i_col) const {
+int64_t Statement::get_int(int i_col) const {
     return sqlite3_column_int64(this->stmt, i_col);
 }
 
-double Statement::get_float(unsigned int i_col) const {
+double Statement::get_float(int i_col) const {
     return sqlite3_column_double(this->stmt, i_col);
 }
 
-std::string Statement::get_string(unsigned int i_col) const {
-    return std::string{(const char *)sqlite3_column_text(this->stmt, i_col)};
+std::string Statement::get_string(int i_col) const {
+    return reinterpret_cast<const char *>(
+        sqlite3_column_text(this->stmt, i_col));
 }
 
-BLOB Statement::get_blob(unsigned int i_col) const {
+BLOB Statement::get_blob(int i_col) const {
     return {
         .n_bytes = static_cast<size_t>(sqlite3_column_bytes(this->stmt, i_col)),
         .data = sqlite3_column_blob(this->stmt, i_col),
     };
 }
 
-int Statement::bind(unsigned int i_param, sqlite3_int64 value) const {
+int Statement::bind(int i_param, sqlite3_int64 value) const {
     assert(i_param > 0);
 
     return sqlite3_bind_int64(this->stmt, i_param, value);
 }
 
-int Statement::bind(unsigned int i_param, double value) const {
+int Statement::bind(int i_param, double value) const {
     assert(i_param > 0);
 
     return sqlite3_bind_double(this->stmt, i_param, value);
 }
 
-int Statement::bind(unsigned int i_param, const std::string &value) const {
+int Statement::bind(int i_param, const std::string &value) const {
     assert(i_param > 0);
 
-    return sqlite3_bind_text(this->stmt, i_param, value.c_str(), value.size(),
-                             SQLITE_STATIC);
+    return sqlite3_bind_text(this->stmt, i_param, value.c_str(),
+                             static_cast<int>(value.size()), SQLITE_STATIC);
 }
 
 int Statement::bind(const std::string &param_name, sqlite3_int64 value) const {
@@ -151,7 +153,7 @@ std::string Statement::get_sql() const {
 
 bool table_exists(const std::string &table_name) {
     auto stmt = query("SELECT name FROM pragma_table_list WHERE name = ?;");
-    stmt->bind(1, table_name);
+    auto _ = stmt->bind(1, table_name);
 
     return stmt->next();
 }

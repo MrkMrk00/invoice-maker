@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.13)
 project(invoice_maker LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
+add_definitions(-DINVOICE_MAKER_DEBUG)
 
 find_package(SQLite3 REQUIRED)
 
